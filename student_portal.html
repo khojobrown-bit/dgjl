@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KRS Student Portal</title>
+    <link rel="stylesheet" href="portal.css">
+</head>
+<body>
+    <!-- Login Section -->
+    <div class="portal-container" id="loginSection">
+        <div class="portal-form">
+            <div class="portal-logo">
+                <div style="width: 80px; height: 80px; background: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
+                    <span style="color: white; font-weight: bold; font-size: 1.5rem;">KRS</span>
+                </div>
+                <h1>KRS Student Portal</h1>
+                <p>Welcome to Korley Regional Senior High School Portal</p>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="email">Student Email</label>
+                    <div class="input-group">
+                        <input type="text" id="emailPrefix" placeholder="studentname" required>
+                        <span class="domain">@krs.edu</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="studentCode">Student Code</label>
+                    <div class="input-group">
+                        <input type="password" id="studentCode" placeholder="Enter your student code" required>
+                        <i class="fas fa-eye" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+                    </div>
+                    <small>This is the code generated during your admission</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Login to Portal</button>
+            </form>
+            <div class="portal-footer">
+                <p>Having trouble logging in? Contact IT Support</p>
+                <a href="mailto:support@krs.edu">support@krs.edu</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Section (Initially Hidden) -->
+    <div class="dashboard-container" id="dashboardSection" style="display: none;">
+        <!-- Navigation -->
+        <nav class="dashboard-nav">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <div style="width: 40px; height: 40px; background: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <span style="color: white; font-weight: bold;">KRS</span>
+                    </div>
+                    <span>KRS Student Portal</span>
+                </div>
+                <div class="nav-menu">
+                    <a href="#dashboard" class="nav-link active">Dashboard</a>
+                    <a href="#academics" class="nav-link">Academics</a>
+                    <a href="#fees" class="nav-link">Fees</a>
+                    <a href="#profile" class="nav-link">Profile</a>
+                </div>
+                <div class="nav-user">
+                    <span id="studentName"></span>
+                    <button onclick="logout()" class="btn btn-secondary">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+            <div class="welcome-content">
+                <h1>Welcome, <span id="studentNameBanner"></span>!</h1>
+                <p>Access your academic information and manage your student account</p>
+            </div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Quick Stats -->
+            <div class="stats-container">
+                <div class="stat-card">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3>Current Term</h3>
+                    <p id="currentTerm">First Term 2025/2026</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <h3>Fee Balance</h3>
+                    <p id="feeBalance">GHS 2,000.00</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-book"></i>
+                    <h3>Program</h3>
+                    <p id="studentProgram">Science</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3>Attendance</h3>
+                    <p id="attendance">95%</p>
+                </div>
+            </div>
+
+            <!-- Main Actions -->
+            <div class="actions-grid">
+                <!-- Fee Payment Card -->
+                <div class="action-card">
+                    <div class="card-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3>School Fees</h3>
+                    <p>Make fee payments and view payment history</p>
+                    <button onclick="showPaymentModal()" class="btn btn-primary">Pay Fees</button>
+                </div>
+
+                <!-- Academic Record Card -->
+                <div class="action-card">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Academic Records</h3>
+                    <p>View your grades and academic progress</p>
+                    <button class="btn btn-primary">View Records</button>
+                </div>
+
+                <!-- Course Schedule Card -->
+                <div class="action-card">
+                    <div class="card-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Class Schedule</h3>
+                    <p>View your current class timetable</p>
+                    <button class="btn btn-primary">View Schedule</button>
+                </div>
+
+                <!-- Profile Card -->
+                <div class="action-card">
+                    <div class="card-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3>Profile</h3>
+                    <p>View and update your profile information</p>
+                    <button class="btn btn-primary">View Profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Make Fee Payment</h2>
+                <button class="close-modal" onclick="closePaymentModal()">&times;</button>
+            </div>
+            <div class="payment-options">
+                <div class="payment-option" onclick="selectPaymentOption(this)">
+                    <input type="radio" name="paymentMethod" value="mobileMoney">
+                    <div>
+                        <h4>Mobile Money</h4>
+                        <p>Pay with MTN, Vodafone or AirtelTigo</p>
+                    </div>
+                </div>
+                <div class="payment-option" onclick="selectPaymentOption(this)">
+                    <input type="radio" name="paymentMethod" value="card">
+                    <div>
+                        <h4>Credit/Debit Card</h4>
+                        <p>Pay with Visa, Mastercard or American Express</p>
+                    </div>
+                </div>
+                <div class="payment-option" onclick="selectPaymentOption(this)">
+                    <input type="radio" name="paymentMethod" value="bank">
+                    <div>
+                        <h4>Bank Transfer</h4>
+                        <p>Transfer directly to our bank account</p>
+                    </div>
+                </div>
+            </div>
+            <div class="payment-form" id="paymentForm" style="display: none;">
+                <div class="form-group">
+                    <label for="amount">Amount (GHS)</label>
+                    <input type="number" id="amount" placeholder="Enter amount" min="1" required>
+                </div>
+                <div id="paymentDetails">
+                    <!-- Payment method specific fields will be inserted here -->
+                </div>
+                <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="processPayment()">Proceed to Pay</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('studentCode');
+            const toggleIcon = document.getElementById('togglePassword');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }           
+        }   
+        // Handle login
+        function handleLogin(event) {           
+
+            event.preventDefault();
+            const emailPrefix = document.getElementById('emailPrefix').value;
+            const studentCode = document.getElementById('studentCode').value;
+
+            // Simple validation (In real application, validate against server)
+            if (emailPrefix && studentCode) {
+                const studentName = emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1);
+                document.getElementById('studentName').innerText = studentName;
+                document.getElementById('studentNameBanner').innerText = studentName;
+
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+            } else {
+                alert('Please enter valid credentials.');
+            }
+        }
+        // Logout function
+        function logout() {
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'flex';
+        }
+        // Show payment modal
+        function showPaymentModal() {
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+        // Close payment modal
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+            resetPaymentForm();
+        }
+
+        // Select payment option
+        function selectPaymentOption(option) {
+            const options = document.querySelectorAll('.payment-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+
+            const paymentMethod = option.querySelector('input').value;
+            const paymentForm = document.getElementById('paymentForm');
+            const paymentDetails = document.getElementById('paymentDetails');
+            paymentDetails.innerHTML = '';
+
+            if (paymentMethod) {
+                paymentForm.style.display = 'block';
+
+                if (paymentMethod === 'mobileMoney') {
+                    paymentDetails.innerHTML = `
+                        <div class="form-group">
+                            <label for="mobileNumber">Mobile Number</label>
+                            <input type="text" id="mobileNumber" placeholder="Enter your mobile number" required>                                           
+                        </div>
+                    `;
+                        
+                } else if (paymentMethod === 'card') {
+                    paymentDetails.innerHTML = `
+                        <div class="form-group">
+                            <label for="cardNumber">Card Number</label>
+                            <input type="text" id="cardNumber" placeholder="Enter your card number" required>
+                        </div>      
+
+
+
+
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiryDate">Expiry Date</label>
+                                <input type="text" id="expiryDate" placeholder="MM/YY" required>                            
+
+                            </div>  
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input type="text" id="cvv" placeholder="CVV" required> 
+                            </div>
+                        </div>      
+                    `;
+                } else if (paymentMethod === 'bank') {
+                    paymentDetails.innerHTML = `
+                        <div class="form-group">
+                            <label for="accountName">Account Name</label>
+                            <input type="text" id="accountName" placeholder="Enter your account name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="accountNumber">Account Number</label>
+                            <input type="text" id="accountNumber" placeholder="Enter your account number" required>
+                        </div>
+                    `;
+
+                }                                                   
+
+
+
+            } else {                    
+                paymentForm.style.display = 'none';
+            }
+        }                                               
+        // Process payment
+        function processPayment() {
+            const amount = document.getElementById('amount').value;
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount.');
+                return;
+            }
+            alert('Payment processed successfully for GHS ' + amount);
+            closePaymentModal();
+        }   
+        // Reset payment form   
+        function resetPaymentForm() {
+            const options = document.querySelectorAll('.payment-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            document.getElementById('paymentForm').style.display = 'none';
+            document.getElementById('paymentDetails').innerHTML = '';
+            document.getElementById('amount').value = '';
+        }
+    </script>                               
+    <!-- Font Awesome CDN for icons -->             
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>       
+</body>                                     
+</html>
